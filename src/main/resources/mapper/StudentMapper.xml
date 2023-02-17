@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+
+<mapper namespace="com.dletc.mapper.StudentMapper">
+
+    <resultMap id="StudentResult" type="com.dletc.entity.Student">
+        <id column="s_id" property="sid"></id>
+        <result column="s_name" property="sname"></result>
+        <result column="s_sex" property="ssex"></result>
+        <result column="s_birthtime" property="birthtime"></result>
+        <result column="s_schooltime" property="sschooltime"></result>
+        <result column="s_department" property="sdepartment"></result>
+    </resultMap>
+    <!--定义查询字段-->
+    <sql id="Studententity">
+       s_id,s_name,s_sex,s_birthtime,s_schooltime,s_department
+    </sql>
+    <!--插入-->
+    <insert id="addStudent">
+   insert into student values(#{sid},#{sname},#{ssex},#{birthtime},#{sschooltime},#{sdepartment})
+    </insert>
+
+    <!--    修改-->
+    <update id="UpdateStudent">
+        update student set s_name=#{sname},s_sex=#{ssex},s_birthtime=#{birthtime},s_schooltime=#{sschooltime},s_department=#{sdepartment}
+        where s_id =#{sid}
+    </update>
+
+    <!--    删除-->
+    <delete id="delStudentBySid">
+        delete from student where s_id=#{sid}
+    </delete>
+
+    <!--查询所有-->
+    <select id="findAllStudent" resultMap="StudentResult">
+        select
+        <include refid="Studententity"/>
+        from student
+    </select>
+
+    <!--根据id进行查询-->
+    <select id="selectAllBySid" resultMap="StudentResult">
+        select
+        <include refid="Studententity"/>
+        from student where s_id=#{sid}
+    </select>
+
+    <select id="findStudentByName" resultMap="StudentResult">
+
+        select
+        <include refid="Studententity"/>
+        from student where s_name like concat('%',#{sname},'%')
+
+    </select>
+
+</mapper>

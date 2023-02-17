@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+
+<mapper namespace="com.dletc.mapper.CurriculmMapper">
+
+    <resultMap id="CurriculResult" type="com.dletc.entity.Curriculm">
+        <id column="c_id" property="cid"></id>
+        <result column="c_name" property="cname"></result>
+        <result column="tid" property="tid"></result>
+        <result column="c_classtime" property="cclasstime"></result>
+        <result column="c_classadress" property="cclassadress"></result>
+        <result column="c_moth" property="cmoth"></result>
+        <result column="c_classtype" property="cclasstype"></result>
+        <result column="c_department" property="cdepartment"></result>
+        <result column="c_fraction" property="cfraction"></result>
+    </resultMap>
+    <!--定义查询字段-->
+    <sql id="Curriculmentity">
+       c_id,c_name,tid,c_classtime,c_classadress,c_moth,c_classtype,c_department,c_fraction
+    </sql>
+    <!--插入-->
+    <insert id="addCurriculm">
+   insert into curriculm values(#{cid},#{cname},#{tid},#{cclasstime},#{cclassadress},#{cmoth},#{cclasstype},#{cdepartment},#{cfraction})
+    </insert>
+
+    <!--    修改-->
+    <update id="UpdateCurriculm">
+        update curriculm set c_name=#{cname},tid=#{tid},c_classtime=#{cclasstime},c_classadress=#{cclassadress},c_moth=#{cmoth},c_classtype=#{cclasstype},c_department=#{cdepartment},c_fraction=#{cfraction}
+        where c_id =#{cid}
+    </update>
+
+    <!--    删除-->
+    <delete id="delCurriculmByCid">
+        delete from curriculm where c_id=#{cid}
+    </delete>
+
+    <!--查询所有-->
+    <select id="findAllCurriculm" resultMap="CurriculResult">
+        select
+        <include refid="Curriculmentity"/>
+        from curriculm
+    </select>
+
+    <!--根据id进行查询-->
+    <select id="selectAllByCid" resultMap="CurriculResult">
+        select
+        <include refid="Curriculmentity"/>
+        from curriculm where c_id=#{cid}
+    </select>
+
+    <select id="findCurriculmByName" resultMap="CurriculResult">
+
+        select
+        <include refid="Curriculmentity"/>
+        from curriculm where c_name like concat('%',#{cname},'%')
+
+    </select>
+    <!--    查询老师对应的课程-->
+    <select id="findCuriculmByTeacherId" resultMap="CurriculResult">
+        select
+        <include refid="Curriculmentity"/>
+        from curriculm
+        where tid=#{tid}
+
+    </select>
+
+</mapper>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dletc.mapper.UserMapper">
+
+    <!--    User 字段-->
+    <sql id="Userentity">
+      select  uid,uaccounts,upassword,utype,img from user
+    </sql>
+
+    <update id="UpdateUser">
+
+        update user set upassword=#{upassword} where uaccounts=#{uaccounts}
+
+    </update>
+
+    <update id="UpdateUserUpImg">
+
+        update user set upassword=#{upassword},img=#{img} where uaccounts=#{uaccounts}
+
+    </update>
+
+    <select id="verifyAP" resultType="com.dletc.entity.User">
+        <include refid="Userentity"/>
+        where uaccounts =#{uaccounts} and upassword = #{upassword}
+    </select>
+
+
+    <select id="FindUserByname" resultType="com.dletc.entity.User">
+
+        <include refid="Userentity"/>
+        where uaccounts =#{uaccounts}
+
+    </select>
+
+</mapper>

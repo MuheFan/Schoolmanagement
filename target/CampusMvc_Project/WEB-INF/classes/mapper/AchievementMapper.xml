@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dletc.mapper.AchievementMapper">
+
+    <resultMap id="CurriculResult" type="com.dletc.entity.Curriculm">
+        <id column="c_id" property="cid"></id>
+        <result column="c_name" property="cname"></result>
+        <result column="tid" property="tid"></result>
+        <result column="c_classtime" property="cclasstime"></result>
+        <result column="c_classadress" property="cclassadress"></result>
+        <result column="c_moth" property="cmoth"></result>
+        <result column="c_classtype" property="cclasstype"></result>
+        <result column="c_department" property="cdepartment"></result>
+        <result column="c_fraction" property="cfraction"></result>
+    </resultMap>
+
+    <resultMap id="AchResult" type="com.dletc.entity.Achievement">
+        <id column="aid" property="aid"></id>
+        <result column="fraction" property="fracion"></result>
+        <association property="student" javaType="com.dletc.entity.Student">
+            <id column="s_id" property="sid"></id>
+            <result column="s_name" property="sname"></result>
+            <result column="s_sex" property="ssex"></result>
+            <result column="s_birthtime" property="birthtime"></result>
+            <result column="s_schooltime" property="sschooltime"></result>
+            <result column="s_department" property="sdepartment"></result>
+        </association>
+        <association property="curriculm" javaType="com.dletc.entity.Curriculm">
+            <id column="c_id" property="cid"></id>
+            <result column="c_name" property="cname"></result>
+            <result column="tid" property="tid"></result>
+            <result column="c_classtime" property="cclasstime"></result>
+            <result column="c_classadress" property="cclassadress"></result>
+            <result column="c_moth" property="cmoth"></result>
+            <result column="c_classtype" property="cclasstype"></result>
+            <result column="c_department" property="cdepartment"></result>
+            <result column="c_fraction" property="cfraction"></result>
+        </association>
+    </resultMap>
+
+    <!--    学生选择课程-->
+    <insert id="insertAchie">
+        insert into achievement(s_id,c_id) values (#{sid},#{cid})
+    </insert>
+    <!--    学生退课-->
+    <delete id="deletAchie">
+        delete from achievement where s_id=#{sid} and c_id=#{cid}
+    </delete>
+    <!--查询该用户的某个课程 有 多少个学生-->
+    <select id="findfraction" resultMap="AchResult">
+        select * from achievement a left JOIN curriculm c on a.c_id = c.c_id
+        LEFT JOIN user  t on tid = t.uaccounts
+        LEFT JOIN student  s on a.s_id = s.s_id
+        where  c.c_id = #{cid} and t.uaccounts= #{tid}
+   </select>
+    <!--    根据id查询 某个成绩-->
+    <select id="findAchievementById" resultMap="AchResult">
+        select  * from achievement a
+        left JOIN curriculm c on a.c_id = c.c_id
+         LEFT JOIN student s on a.s_id = s.s_id
+        where aid=#{id}
+    </select>
+
+    <!--    该学生未选择的课程-->
+    <select id="NotselectCurriculm" resultMap="CurriculResult">
+
+	 select * from  curriculm  where c_id not in ( select c.c_id from achievement a
+        left JOIN curriculm c on a.c_id = c.c_id
+         LEFT JOIN student s on a.s_id = s.s_id
+        where s.s_id=#{sid}) and
+    </select>
+    <!--    该学生选择的课程-->
+    <select id="selectCurriculm" resultMap="CurriculResult">
+
+SELECT * FROM curriculm c LEFT JOIN achievement a ON c.c_id = a.c_id
+WHERE
+	a.c_id IN (
+		SELECT
+		c.c_id
+	FROM
+		achievement a
+		LEFT JOIN curriculm c ON a.c_id = c.c_id
+		LEFT JOIN student s ON a.s_id = s.s_id
+	WHERE
+		s.s_id = #{sid}
+	)
+	AND a.fraction is null and s_id = #{sid} ;
+    </select>
+    <!--    该学生已修的课程-->
+    <select id="selectRepairedCurriculm" resultMap="AchResult">
+        SELECT * FROM curriculm c LEFT JOIN achievement a ON c.c_id = a.c_id
+WHERE
+	a.c_id IN (
+		SELECT
+		c.c_id
+	FROM
+		achievement a
+		LEFT JOIN curriculm c ON a.c_id = c.c_id
+		LEFT JOIN student s ON a.s_id = s.s_id
+	WHERE
+		s.s_id = #{sid}
+	)
+	AND a.fraction is not null and s_id = #{sid} ;
+
+    </select>
+
+    <!--    修改学生成绩-->
+    <update id="UpdateAchievementById">
+        update  achievement set fraction=#{fracion} where aid=#{aid}
+    </update>
+
+
+</mapper>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+
+<mapper namespace="com.dletc.mapper.TeacherMapper">
+
+    <resultMap id="TeacherResult" type="com.dletc.entity.Teacher">
+        <id column="t_id" property="tid"></id>
+        <result column="t_name" property="tname"></result>
+        <result column="t_sex" property="tsex"></result>
+        <result column="t_birthtime" property="tbirthtime"></result>
+        <result column="t_education" property="teducation"></result>
+        <result column="t_title" property="ttitle"></result>
+        <result column="t_entrydate" property="tentrydate"></result>
+        <result column="t_department" property="tdepartment"></result>
+    </resultMap>
+    <!--定义查询字段-->
+    <sql id="Teachertentity">
+       t_id,t_name,t_sex,t_birthtime,t_education,t_title,t_entrydate,t_department
+    </sql>
+    <!--插入-->
+    <insert id="addTeacher">
+   insert into teacher values(#{tid},#{tname},#{tsex},#{tbirthtime},#{teducation},#{ttitle},#{tentrydate},#{tdepartment})
+    </insert>
+
+    <!--    修改-->
+    <update id="UpdateTeacher">
+        update teacher set t_name=#{tname},t_sex=#{tsex},t_birthtime=#{tbirthtime},t_education=#{teducation},t_title=#{ttitle},t_entrydate=#{tentrydate},t_department=#{tdepartment}
+        where t_id =#{tid}
+    </update>
+
+    <!--    删除-->
+    <delete id="delTeacherByTid">
+        delete from teacher where t_id=#{tid}
+    </delete>
+
+    <!--查询所有-->
+    <select id="findAllTeacher" resultMap="TeacherResult">
+        select
+        <include refid="Teachertentity"/>
+        from teacher
+    </select>
+
+    <!--根据id进行查询-->
+    <select id="selectAllByTid" resultMap="TeacherResult">
+        select
+        <include refid="Teachertentity"/>
+        from teacher where t_id=#{tid}
+    </select>
+
+    <select id="findTeacherByName" resultMap="TeacherResult">
+
+        select
+        <include refid="Teachertentity"/>
+        from teacher where t_name like concat('%',#{tname},'%')
+
+    </select>
+
+</mapper>
